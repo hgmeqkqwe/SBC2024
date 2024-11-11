@@ -112,11 +112,11 @@ Version Control | ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for
 <br>
 
 #### 2. 논리적 모델링
-<img src="https://github.com/vanjooda/SBC2024/blob/main/%EB%85%BC%EB%A6%AC%EC%A0%81%EB%AA%A8%EB%8D%B8_%EC%B5%9C%EC%A2%85.png" alt="논리적 모델링" width="400">
+<img src="https://github.com/vanjooda/SBC2024/blob/main/%EB%85%BC%EB%A6%AC%EC%A0%81%EB%AA%A8%EB%8D%B8_%EC%B5%9C%EC%A2%85.png" alt="논리적 모델링" width="100%">
 
 <br>
 
 #### 3. 물리적 모델링
-<img src="https://github.com/vanjooda/SBC2024/blob/main/%EB%AC%BC%EB%A6%AC%EC%A0%81%EB%AA%A8%EB%8D%B8_%EC%B5%9C%EC%A2%85.png" alt="물리적 모델링" width="400">
+<img src="https://github.com/vanjooda/SBC2024/blob/main/%EB%AC%BC%EB%A6%AC%EC%A0%81%EB%AA%A8%EB%8D%B8_%EC%B5%9C%EC%A2%85.png" alt="물리적 모델링" width="100%">
 
 <br>
