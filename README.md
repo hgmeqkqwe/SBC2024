@@ -107,7 +107,7 @@ Version Control | ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for
 
 
 #### 1. 개체 관계도
-<img src="https://github.com/vanjooda/SBC2024/blob/main/%EA%B0%9C%EC%B2%B4%EA%B4%80%EA%B3%84%EB%8F%84_%EC%B5%9C%EC%A2%85.png" alt="개체 관계도" width="400">
+<img src="https://github.com/vanjooda/SBC2024/blob/main/%EA%B0%9C%EC%B2%B4%EA%B4%80%EA%B3%84%EB%8F%84_%EC%B5%9C%EC%A2%85.png" alt="개체 관계도" width="100%">
 
 <br>
 
