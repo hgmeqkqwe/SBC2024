@@ -13,7 +13,7 @@ import java.util.Map;
 public class JWTUtil {
 
     // 암호키
-    private static final String key = "**********";
+    private static final String key = "sbc_camping_project_secret_key_2026_fighting_!!";
 
     // 토큰 생성
     public static String generateToken(Map<String, Object> valueMap, int min) {

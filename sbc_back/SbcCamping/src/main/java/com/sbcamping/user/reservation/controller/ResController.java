@@ -7,11 +7,14 @@ import com.sbcamping.user.reservation.dto.ReservationDTO;
 import com.sbcamping.user.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController("userResController")    //사용자 예약 컨트롤러
 @RequiredArgsConstructor
@@ -24,13 +27,21 @@ public class ResController {
 
 
     @PostMapping("/")
-    public String register(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<?> register(@RequestBody ReservationDTO reservationDTO) {
 
-        Reservation reservation = service.register(reservationDTO);
-
-        log.info(reservation);
-
-        return reservation.getResId();
+        try {
+            Reservation reservation = service.register(reservationDTO);
+            log.info("예약 성공: " + reservation);
+            
+            return ResponseEntity.ok(reservation.getResId());
+        } catch (DataIntegrityViolationException e) {
+            log.error("중복 예약 발생: " + e.getMessage());
+            
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "이미 예약된 정보가 있습니다. 다시 확인해주세요"));
+                    
+        }
     }
 
     @CrossOrigin(origins = "http://localhost:3000")

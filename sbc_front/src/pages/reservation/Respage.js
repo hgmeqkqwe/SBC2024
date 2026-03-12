@@ -184,6 +184,11 @@ const Respage = () => {
             .catch(error => {
                 firstSetShow(false)
                 thirdSetShow(true)
+
+                if (error.response) {
+                    const errorMessage = error.response.data.message || error.response.data;
+                    alert(`오류 발생: ${errorMessage}`)
+                }
             })
     };
 
@@ -299,6 +304,14 @@ const Respage = () => {
         })
     }, [])
 
+    // 링크로 들어올 경우 잘못된 접근이라고 차단
+    useEffect(() => {
+        if (!siteName) {
+            alert("잘못된 접근 입니다. 예약 페이지를 다시 거쳐주세요 ")
+            navigate("/res/realtime", {replace: true})
+        }
+    }, [siteName, navigate])
+
     // 로그인 여부 확인
     const {isLogin, moveToLoginReturn} = useCustomLogin()
     if (!isLogin) {
@@ -411,9 +424,9 @@ const Respage = () => {
                     <Col sm="10">
                         <Form.Select name="resPeople" onChange={handleChangeRes} aria-label="입실 인원수">
                             <option value="0">입실 인원수는 최대 {maxPeople}명입니다.</option>
-                            {Array.from({length: maxPeople}, (_, index) => (
-                                <option key={index + 1} value={index + 1}>
-                                    {index + 1}명
+                            {Array.from({length: maxPeople-1}, (_, index) => (
+                                <option key={index + 1} value={index + 2}>
+                                    {index + 2}명
                                 </option>
                             ))}
                         </Form.Select>
