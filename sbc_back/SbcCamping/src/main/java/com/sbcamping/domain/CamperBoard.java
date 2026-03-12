@@ -20,6 +20,7 @@ public class CamperBoard {
     @Column(name = "Cboard_ID", columnDefinition = "NUMBER(10,0)")
     private Long cBoardID; //캠퍼 게시판 글 번호
 
+    // 깃 최종
     // Member테이블을 참조하는 회원 번호(FK) ,이 경우엔 필드명이 같지만 테이블마다 컬럼명이 다를 수도 있으니 지정해줘야함
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")

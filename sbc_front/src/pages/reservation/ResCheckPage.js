@@ -29,7 +29,7 @@ const ResCheckPage = () => {
 
         /* 1. 가맹점 식별하기 */
         const { IMP } = window;
-        IMP.init('imp34501875');
+        IMP.init('**********');
 
         /* 2. 결제 데이터 정의하기 */
         const data = {
