@@ -45,7 +45,7 @@ const MonthComponent = () => {
     // 주어진 년도와 월에 따라 달력 데이터를 생성하는 함수
     const generateCalendar = (year, month) => {
         const firstDay = new Date(year, month - 1, 1).getDay(); // 첫 날의 요일
-        const firstMonth = new Date(year, month, 0).getDate(); // 해당 월의 총 일수
+        const firstMonth = new Date(year, month, 0).getDate(); // 전 달의 마지막 날
 
         const weeks = [];
         let date = 1;
@@ -106,6 +106,7 @@ const MonthComponent = () => {
             setSite(data)
         })
         resCheck().then(data => {
+            console.log(data)
             setResCheckData(data);
         })
     }, [])

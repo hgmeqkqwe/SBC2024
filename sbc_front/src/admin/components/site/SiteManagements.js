@@ -10,7 +10,7 @@ import { FaQuestionCircle } from 'react-icons/fa';
 
 
 // 최대,최소 허용 인원 수를 상수로 선언
-const maxLimitPeople = 6;
+const maxLimitPeople = 20;
 const minLimitPeople = 1;
 
 // SiteManagements 컴포넌트
@@ -189,7 +189,7 @@ const SiteManagements = () => {
                             {/*크기 넘버 1*/}
                             <td>{site.maxPeople}</td>
                             {/*크기 넘버10*/}
-                            <td>{site.weekdayPay}</td>
+                            <td>{site.weekdayPay ? site.weekdayPay.toLocaleString() : 0}</td>
                             {/*크기 넘버10*/}
                             <td>{site.weekendPay ? site.weekendPay.toLocaleString() : 0}</td>
                             <td>
@@ -204,9 +204,9 @@ const SiteManagements = () => {
                         </tr>
                     ))
                 ) : (
-                  /*  <Spinner animation="border" role="status">
-                        <td className="visually-hidden">Loading...</td>
-                    </Spinner>*/ //생각보다 사용감이 많이 구림
+                    /*  <Spinner animation="border" role="status">
+                          <td className="visually-hidden">Loading...</td>
+                      </Spinner>*/ //생각보다 사용감이 많이 구림
                     <td>
                         Loding...
                     </td>

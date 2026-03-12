@@ -75,7 +75,6 @@ const Respage = () => {
     const secondShowClose = () => firstSetShow(false);
     const thirdShowClose = () => thirdSetShow(false);
 
-
     // 예약 완료 페이지로 이동
     const handleSucceed = () => {
         // 모달을 닫고 navigate 호출
@@ -99,20 +98,12 @@ const Respage = () => {
     const handleChangeRes = (e) => {
         const {name, value} = e.target;
 
-        const newValue = name === 'resPeople' ? parseInt(value) : value;
+        const newValue = (name === 'resPeople') ? parseInt(value) : value;
 
-        // checkinDate와 checkoutDate는 별도로 처리
-        if (name === "checkinDate" || name === "checkoutDate") {
-            setRes((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }))
-        } else {
-            setRes((prevState) => ({
-                ...prevState,
-                [name]: newValue,
-            }));
-        }
+        setRes((prevState) => ({
+            ...prevState,
+            [name]: newValue
+        }));
     };
 
     // 모달 상태 변경 / 데이터 추가
@@ -126,37 +117,60 @@ const Respage = () => {
         checkinDate.setHours(0, 0, 0, 0);
         checkOutDate.setHours(0, 0, 0, 0);
 
-        if (date > checkinDate) {
-            firstSetShow(false)
+        const validationRules = [
+            {condition: date > checkinDate, message: "입실 날짜를 다시 확인해주세요."},
+            {condition: checkinDate > checkOutDate || !res.checkoutDate, message: "퇴실 날짜를 다시 확인해주세요."},
+            {condition: checkinDate.getTime() === checkOutDate.getTime(), message: "입실 날짜와 퇴실 날짜가 같을수 없습니다."},
+            {condition: !resCheck, message: "예약 하실려는 날짜에 예약이 이미 존재합니다."},
+            {condition: res.resPeople === 0, message: "입실 인원수를 선택해주세요."},
+            {condition: res.resUserName === "", message: "예약자명을 입력해주세요."},
+            {condition: res.resUserPhone === "", message: "예약자 전화번호를 입력해주세요."}
+        ]
+
+        const errorRules = validationRules.filter(rule => rule.condition)
+
+        if (errorRules.length > 0) {
+            firstSetShow(false);
+
+            const allErrorMessage = errorRules.map(rule => rule.message).join("\n");
+
             setTimeout(() => {
-                alert("입실 날짜를 다시 확인해주세요")
-            }, 100)
-            return;
-        } else if (checkinDate > checkOutDate) {
-            firstSetShow(false)
-            setTimeout(() => {
-                alert("퇴실 날짜를 다시 확인해주세요")
+                alert(allErrorMessage)
             }, 100);
-            return;
-        } else if (checkinDate.getTime() === checkOutDate.getTime()) {
-            firstSetShow(false)
-            setTimeout(() => {
-                alert("입실 날짜와 퇴실 날짜가 같을수 없습니다.")
-            }, 100);
-            return;
-        } else if (!resCheck) {
-            firstSetShow(false)
-            setTimeout(() => {
-                alert("예약 하실려는 날짜에 예약이 이미 존재합니다.")
-            }, 100);
-            return;
-        } else if (res.resPeople === 0) {
-            firstSetShow(false)
-            setTimeout(() => {
-                alert("입실 인원수를 선택해주세요.")
-            }, 100)
             return;
         }
+
+        // if (date > checkinDate) {
+        //     firstSetShow(false)
+        //     setTimeout(() => {
+        //         alert("입실 날짜를 다시 확인해주세요")
+        //     }, 100)
+        //     return;
+        // } else if (checkinDate > checkOutDate) {
+        //     firstSetShow(false)
+        //     setTimeout(() => {
+        //         alert("퇴실 날짜를 다시 확인해주세요")
+        //     }, 100);
+        //     return;
+        // } else if (checkinDate.getTime() === checkOutDate.getTime()) {
+        //     firstSetShow(false)
+        //     setTimeout(() => {
+        //         alert("입실 날짜와 퇴실 날짜가 같을수 없습니다.")
+        //     }, 100);
+        //     return;
+        // } else if (!resCheck) {
+        //     firstSetShow(false)
+        //     setTimeout(() => {
+        //         alert("예약 하실려는 날짜에 예약이 이미 존재합니다.")
+        //     }, 100);
+        //     return;
+        // } else if (res.resPeople === 0) {
+        //     firstSetShow(false)
+        //     setTimeout(() => {
+        //         alert("입실 인원수를 선택해주세요.")
+        //     }, 100)
+        //     return;
+        // }
 
         resAdd(res)
             .then(result => {
@@ -174,20 +188,20 @@ const Respage = () => {
     };
 
     const handleCheckChange = () => {
-            // 체크가 되면 사용자 명을 memberName으로 설정
-            if (checkRef.current.checked) {
-                setRes((prevState) => ({
-                    ...prevState,
-                    resUserName: memberName,
-                    resUserPhone: memberPhone,
-                }));
-            } else {
-                setRes((prevState) => ({
-                    ...prevState,
-                    resUserName: '',
-                    resUserPhone: '',
-                }))
-            }
+        // 체크가 되면 사용자 명을 memberName으로 설정
+        if (checkRef.current.checked) {
+            setRes((prevState) => ({
+                ...prevState,
+                resUserName: memberName,
+                resUserPhone: memberPhone,
+            }));
+        } else {
+            setRes((prevState) => ({
+                ...prevState,
+                resUserName: '',
+                resUserPhone: '',
+            }))
+        }
     }
 
     const resFilter = (siteId, checkinDate, checkoutDate) => {
@@ -200,13 +214,11 @@ const Respage = () => {
         const isReserved = resCheckData.filter((item) =>
             item[0] === siteId &&
             // checkin 2024-10-24 // checkout 2024-10-26 // date seq 24 true 25 true 26 false
-            (new Date(item[3]) >= new Date(checkin)) && (new Date(item[3]) <= checkout)  &&
+            (new Date(item[3]) >= new Date(checkin)) && (new Date(item[3]) <= checkout) &&
             item[4] === "true"
         )
-        if (isReserved.length > 0) {
-            return false;
-        }
-        return true;
+        return isReserved.length <= 0;
+
     };
 
     // 입실날짜 퇴실날짜 상태 저장
@@ -229,6 +241,7 @@ const Respage = () => {
                 checkinDate: formattedDate,
             }));
         }
+
     }, [year, month, day, memberId, siteId]);
 
     // 연박 계산
@@ -397,7 +410,7 @@ const Respage = () => {
                     </Form.Label>
                     <Col sm="10">
                         <Form.Select name="resPeople" onChange={handleChangeRes} aria-label="입실 인원수">
-                            <option>입실 인원수는 최대 {maxPeople}명입니다.</option>
+                            <option value="0">입실 인원수는 최대 {maxPeople}명입니다.</option>
                             {Array.from({length: maxPeople}, (_, index) => (
                                 <option key={index + 1} value={index + 1}>
                                     {index + 1}명

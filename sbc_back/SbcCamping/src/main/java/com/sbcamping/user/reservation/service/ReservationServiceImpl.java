@@ -29,13 +29,13 @@ import java.util.List;
 public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
 
     @Autowired
-    SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
 
     @Autowired
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     private static int number = 1;
 
@@ -105,7 +105,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    @Scheduled(fixedDelay = 21600000) // 6시간마다 함수 호출
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정마다 함수 호출
     public void resStatusCheck() {
 
         // 현재 날짜 구하기
@@ -124,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService {
              * isEqual 10-22 true
              * @Param checkoutDate 확인할 체크아웃 날짜
              */
-            
+
             if (reservation.getCheckoutDate().isBefore(now.minusDays(1))
                     ||
                     reservation.getCheckoutDate().isEqual(now.minusDays(1))) {
