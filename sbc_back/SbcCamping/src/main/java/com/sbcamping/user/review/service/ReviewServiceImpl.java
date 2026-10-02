@@ -119,7 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Long register(ReviewReqDTO reviewDTO) {
 
         Optional<Member> member = memberRepository.findById(reviewDTO.getMemberId());
-        Optional<Reservation> optionalReservation = reservationRepository.findById(Long.valueOf(reviewDTO.getResId()));
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reviewDTO.getResId());
 
         Review review = Review.builder()
                 .reviewAttachment(reviewDTO.getReviewAttachment())

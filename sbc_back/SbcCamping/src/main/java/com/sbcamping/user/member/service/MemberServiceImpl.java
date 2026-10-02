@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 예약번호로 리뷰 글 번호 가져오기
     @Override
-    public Map<String, Long> getReviewNo(Long resID) {
+    public Map<String, Long> getReviewNo(String resID) {
         Review re = reviewRepository.findByResId(resID);
         Long reviewId = re.getReviewID();
         Map<String, Long> map = new HashMap<>();
@@ -79,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 예약 상태 변경
     @Override
-    public void cancelRes(Long resId, String reason) {
+    public void cancelRes(String resId, String reason) {
         Reservation res = reservationRepository.findById(resId).orElse(null);
         Objects.requireNonNull(res, "reservation is null").setResStatus("예약취소");
         res.setResCancelDate(LocalDate.now());
@@ -90,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 예약 내역 상세 조회
     @Override
-    public Reservation getResDetail(Long resId) {
+    public Reservation getResDetail(String resId) {
         Reservation res = reservationRepository.findById(resId).orElse(null);
         log.info("res : {}", res);
         return res;

@@ -30,7 +30,7 @@ public class MemberController {
     // 예약 상태 변경 (예약취소)
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{resID}/cancel")
-    public void cancelReservation(@PathVariable Long resID, @RequestBody Map<String,String> reason){
+    public void cancelReservation(@PathVariable String resID, @RequestBody Map<String,String> reason){
         log.info("----------- 예약 상태 변경 메소드 도착 ID : {} 이유 : {}", resID, reason);
         memberService.cancelRes(resID, reason.get("reason"));
     }
@@ -45,14 +45,14 @@ public class MemberController {
     // 예약 상세 내역 조회
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/res/{resID}")
-    public Reservation getDetailMyRes(@PathVariable(name = "resID") Long resID){
+    public Reservation getDetailMyRes(@PathVariable(name = "resID") String resID){
         return memberService.getResDetail(resID);
     }
 
     // 예약번호로 리뷰글 번호 찾기
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/review/{resId}")
-    public Map<String, Long> getReviewNo(@PathVariable Long resId){
+    public Map<String, Long> getReviewNo(@PathVariable String resId){
         log.info("--------- 예약번호로 리뷰글 찾기 : {}", resId);
         return memberService.getReviewNo(resId);
     }

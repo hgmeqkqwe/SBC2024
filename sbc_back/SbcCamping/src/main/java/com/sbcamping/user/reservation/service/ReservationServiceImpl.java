@@ -12,13 +12,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cglib.core.Local;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -65,9 +71,29 @@ public class ReservationServiceImpl implements ReservationService {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-        Site site = siteRepository.findById(siteId)
-                .orElseThrow(() -> new IllegalArgumentException("Site not found"));
 
+        LocalDate checkin = reservationDTO.getCheckinDate();
+        LocalDate checkout = reservationDTO.getCheckoutDate();
+
+        if (checkin == null || checkout == null || !checkin.isBefore(checkout)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,"퇴실일은 입실일보다 늦어야 합니다."
+            );
+        }
+
+        // 구역 잠금 획득
+        Site site = siteRepository.findByIdForUpdate(siteId)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "구역이 없습니다."
+                        ));
+
+        // 잠금을 획득한 뒤 겹치는 예약 확인
+        if (reservationRepository.countOverlapping(
+                siteId, checkin, checkout) > 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "다른 사용자가 먼저 예약했습니다."
+            );
+        }
         log.info("--------------------------------------------------------------------");
         log.info(member);
         log.info("--------------------------------------------------------------------");
@@ -99,9 +125,38 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Object[]> getResCheck() {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        List<Reservation> reservations = reservationRepository.getReservations(today);
 
-        return reservationRepository.getReservations();
+        List<Object[]> result = new ArrayList<>();
+
+        for (Reservation reservation : reservations) {
+            LocalDate checkout = reservation.getCheckoutDate();
+
+            // 입실일부터 퇴실일 전날까지 날짜별 결과 생성
+            for (LocalDate day = reservation.getCheckinDate();
+                day.isBefore(checkout);
+                day = day.plusDays(1)) {
+
+                result.add(new Object[] {
+                        reservation.getSite().getSiteId(),
+                        day.toString(),
+                        checkout.toString(),
+                        day.toString(),
+                        "true"
+                });
+            }
+        }
+
+        // 기존 쿼리처럼 구역 숙박 날짜 순으로 정렬
+        result.sort(
+                Comparator.<Object[], Long>comparing(row -> (Long) row[0])
+                        .thenComparing(row -> (String) row[3])
+        );
+
+        return result;
     }
 
     @Override

@@ -16,8 +16,8 @@ public interface MemberService {
     String updatePw(Member member);
     String authPw(Long memberId, String memberPw);
     List<Reservation> getMemberRes(Long memberId);
-    Reservation getResDetail(Long resId);
-    void cancelRes(Long resId, String reason);
+    Reservation getResDetail(String resId);
+    void cancelRes(String resId, String reason);
     String withdraw(Long memberId, String memberPw);
-    Map<String, Long> getReviewNo(Long resID);
+    Map<String, Long> getReviewNo(String resID);
 }

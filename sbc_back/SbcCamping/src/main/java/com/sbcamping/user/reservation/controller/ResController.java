@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,12 +32,12 @@ public class ResController {
 
         try {
             Reservation reservation = service.register(reservationDTO);
-            log.info("예약 성공: " + reservation);
+            log.info("-----------------예약 성공: " + reservation);
             
             return ResponseEntity.ok(reservation.getResId());
         } catch (DataIntegrityViolationException e) {
-            log.error("중복 예약 발생: " + e.getMessage());
-            
+            log.error("-----------------중복 예약 발생: " + e.getMessage());
+
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(Map.of("message", "이미 예약된 정보가 있습니다. 다시 확인해주세요"));

@@ -34,6 +34,9 @@ const Respage = () => {
     // 예약 번호 저장하는 상태 관리
     const [resNumber, setResNumber] = useState('')
 
+    // 예약 실패 사유
+    const [errorMessage, setMessage] = useState("")
+
     const location = useLocation();
     const navigate = useNavigate();
     const {exceptionHandle} = useCustomLogin()
@@ -139,39 +142,6 @@ const Respage = () => {
             }, 100);
             return;
         }
-
-        // if (date > checkinDate) {
-        //     firstSetShow(false)
-        //     setTimeout(() => {
-        //         alert("입실 날짜를 다시 확인해주세요")
-        //     }, 100)
-        //     return;
-        // } else if (checkinDate > checkOutDate) {
-        //     firstSetShow(false)
-        //     setTimeout(() => {
-        //         alert("퇴실 날짜를 다시 확인해주세요")
-        //     }, 100);
-        //     return;
-        // } else if (checkinDate.getTime() === checkOutDate.getTime()) {
-        //     firstSetShow(false)
-        //     setTimeout(() => {
-        //         alert("입실 날짜와 퇴실 날짜가 같을수 없습니다.")
-        //     }, 100);
-        //     return;
-        // } else if (!resCheck) {
-        //     firstSetShow(false)
-        //     setTimeout(() => {
-        //         alert("예약 하실려는 날짜에 예약이 이미 존재합니다.")
-        //     }, 100);
-        //     return;
-        // } else if (res.resPeople === 0) {
-        //     firstSetShow(false)
-        //     setTimeout(() => {
-        //         alert("입실 인원수를 선택해주세요.")
-        //     }, 100)
-        //     return;
-        // }
-
         resAdd(res)
             .then(result => {
                 firstSetShow(false)
@@ -187,7 +157,7 @@ const Respage = () => {
 
                 if (error.response) {
                     const errorMessage = error.response.data.message || error.response.data;
-                    alert(`오류 발생: ${errorMessage}`)
+                    setMessage(errorMessage)
                 }
             })
     };
@@ -219,7 +189,7 @@ const Respage = () => {
         const isReserved = resCheckData.filter((item) =>
             item[0] === siteId &&
             // checkin 2024-10-24 // checkout 2024-10-26 // date seq 24 true 25 true 26 false
-            (new Date(item[3]) >= new Date(checkin)) && (new Date(item[3]) <= checkout) &&
+            (new Date(item[3]) >= new Date(checkin)) && (new Date(item[3]) < checkout) &&
             item[4] === "true"
         )
         return isReserved.length <= 0;
@@ -510,6 +480,9 @@ const Respage = () => {
                     <Modal.Title>예약실패</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    실패사유: {errorMessage}
+                    <br />
+                    <br />
                     죄송합니다. 예약을 완료하는 데 어려움이 발생했습니다. 입력하신 정보나 조건을 다시 한번 확인해 주시기 바랍니다. 도움이 필요하시면 언제든지 문의해 주세요.
                 </Modal.Body>
                 <Modal.Footer>

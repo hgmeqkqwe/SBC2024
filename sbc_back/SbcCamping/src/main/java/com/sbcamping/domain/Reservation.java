@@ -8,12 +8,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
-@Table(name = "Reservation", uniqueConstraints = {
-        @UniqueConstraint(
-                name = "UK_SITE_CHECKIN",
-                columnNames = {"SITE_ID", "CHECKIN_DATE"}
-        )
-})
+@Table(name = "Reservation")
 @Getter
 @ToString
 @Builder
