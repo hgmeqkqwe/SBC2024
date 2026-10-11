@@ -186,7 +186,7 @@ const Respage = () => {
             item.siteId === siteId &&
             // checkin 2024-10-24 // checkout 2024-10-26 // date seq 24 true 25 true 26 false
             (new Date(item.reservedDate) >= new Date(checkin)) && (new Date(item.reservedDate) < checkout) &&
-            item[4] === "true"
+            item.reserved === "true"
         )
         return isReserved.length <= 0;
 
