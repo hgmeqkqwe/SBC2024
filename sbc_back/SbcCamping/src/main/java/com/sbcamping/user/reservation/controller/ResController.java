@@ -4,6 +4,7 @@ import com.sbcamping.domain.Member;
 import com.sbcamping.domain.Reservation;
 import com.sbcamping.domain.Site;
 import com.sbcamping.user.reservation.dto.ReservationDTO;
+import com.sbcamping.user.reservation.dto.ReservationDateDTO;
 import com.sbcamping.user.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -54,9 +55,9 @@ public class ResController {
 
 
     @GetMapping("/resList")
-    public ResponseEntity<List<Object[]>> getResCheck() {
+    public ResponseEntity<List<ReservationDateDTO>> getResCheck() {
 
-        List<Object[]> reservations = service.getResCheck();
+        List<ReservationDateDTO> reservations = service.getResCheck();
 
         return ResponseEntity.ok(reservations);
     }

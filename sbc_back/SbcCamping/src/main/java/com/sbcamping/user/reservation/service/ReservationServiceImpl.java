@@ -6,13 +6,12 @@ import com.sbcamping.domain.Reservation;
 import com.sbcamping.domain.Site;
 import com.sbcamping.user.member.repository.MemberRepository;
 import com.sbcamping.user.reservation.dto.ReservationDTO;
+import com.sbcamping.user.reservation.dto.ReservationDateDTO;
 import com.sbcamping.user.reservation.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -126,11 +125,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Object[]> getResCheck() {
+    public List<ReservationDateDTO> getResCheck() {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<Reservation> reservations = reservationRepository.getReservations(today);
 
-        List<Object[]> result = new ArrayList<>();
+        List<ReservationDateDTO> result = new ArrayList<>();
 
         for (Reservation reservation : reservations) {
             LocalDate checkout = reservation.getCheckoutDate();
@@ -140,20 +139,19 @@ public class ReservationServiceImpl implements ReservationService {
                 day.isBefore(checkout);
                 day = day.plusDays(1)) {
 
-                result.add(new Object[] {
+                result.add(new ReservationDateDTO(
                         reservation.getSite().getSiteId(),
                         day.toString(),
                         checkout.toString(),
-                        day.toString(),
-                        "true"
-                });
+                        true
+                ));
             }
         }
 
         // 기존 쿼리처럼 구역 숙박 날짜 순으로 정렬
         result.sort(
-                Comparator.<Object[], Long>comparing(row -> (Long) row[0])
-                        .thenComparing(row -> (String) row[3])
+                Comparator.comparing(ReservationDateDTO::getSiteId)
+                        .thenComparing(ReservationDateDTO::getReservedDate)
         );
 
         return result;

@@ -194,16 +194,16 @@ const MonthComponent = () => {
                             const isPast = isPastDate(dayInfo.year, dayInfo.month, dayInfo.day);
 
                             const result = resCheckData.map(item => {
-                                const date = new Date(item[3])
+                                const date = new Date(item.reservedDate)
                                 return date.toISOString().split('T')[0]
                             })
 
                             const filterCheck = (siteId, date) => {
 
                                 const filterData = resCheckData.filter((item, index) =>
-                                    item[0] === siteId &&
+                                    item.siteId === siteId &&
                                     result[index] === date &&
-                                    item[4] === "true"
+                                    item.reserved === "true"
                                 )
 
                                 // 조건을 만족하는 경우 true를 반환하고, 만족하지 않으면 false 반환

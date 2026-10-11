@@ -231,9 +231,6 @@ const ReviewListComponent = () => {
                     </Table>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary">
-                        글쓰기
-                    </Button>
                     <Button variant="secondary" onClick={handleFirstClose}>
                         취소
                     </Button>

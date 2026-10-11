@@ -66,7 +66,6 @@ const Respage = () => {
     // 모달 상태 관리
     const [firstShow, firstSetShow] = useState(false);
     const [secondShow, secondSetShow] = useState(false);
-    const [thirdShow, thirdSetShow] = useState(false);
 
     // check 상태를 동적으로 변경
     const checkRef = useRef();
@@ -76,7 +75,6 @@ const Respage = () => {
     const firstHandleShow = () => firstSetShow(true);
 
     const secondShowClose = () => firstSetShow(false);
-    const thirdShowClose = () => thirdSetShow(false);
 
     // 예약 완료 페이지로 이동
     const handleSucceed = () => {
@@ -153,11 +151,9 @@ const Respage = () => {
             })
             .catch(error => {
                 firstSetShow(false)
-                thirdSetShow(true)
-
                 if (error.response) {
                     const errorMessage = error.response.data.message || error.response.data;
-                    setMessage(errorMessage)
+                    alert(errorMessage)
                 }
             })
     };
@@ -186,10 +182,10 @@ const Respage = () => {
 
         // 체크인과 체크아웃 사이의 각 날짜에 대해 예약 가능 여부를 확인
         // 현재 날짜가 예약된 날짜인지 확인
-        const isReserved = resCheckData.filter((item) =>
-            item[0] === siteId &&
+        const isReserved = resCheckData.filter(item =>
+            item.siteId === siteId &&
             // checkin 2024-10-24 // checkout 2024-10-26 // date seq 24 true 25 true 26 false
-            (new Date(item[3]) >= new Date(checkin)) && (new Date(item[3]) < checkout) &&
+            (new Date(item.reservedDate) >= new Date(checkin)) && (new Date(item.reservedDate) < checkout) &&
             item[4] === "true"
         )
         return isReserved.length <= 0;
@@ -465,28 +461,6 @@ const Respage = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={handleSucceed}>
-                        확인
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            <Modal
-                show={thirdShow}
-                onHide={firstShowClose}
-                backdrop="static"
-                keyboard={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>예약실패</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    실패사유: {errorMessage}
-                    <br />
-                    <br />
-                    죄송합니다. 예약을 완료하는 데 어려움이 발생했습니다. 입력하신 정보나 조건을 다시 한번 확인해 주시기 바랍니다. 도움이 필요하시면 언제든지 문의해 주세요.
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={thirdShowClose}>
                         확인
                     </Button>
                 </Modal.Footer>
